@@ -61,17 +61,11 @@ class Router
         foreach ($this->routes as $route) {
             if ($route['uri'] === $uri && $route['method'] === strtoupper($method)) {
                 Middleware::resolve($route['middleware']);
-                $hp = ['index' => 'index()',
-                    'create' => 'create',
-                    'destroy' => 'destroy',
-                    'edit' => 'edit',
-                    'show' => 'show',
-                    'store' => 'store',
-                    'update' => 'update'];
-                if (array_key_exists($route['controller'], $hp)){
-                    $controller = App::resolve(NotesController::class);
 
-                    $controller->index();
+                if (array_key_exists($route['controller'], NotesController::$noteRoutes)){
+                    $controller = App::resolve(NotesController::class);
+                    $funcio = NotesController::$noteRoutes[$route['controller']];
+                    $controller->$funcio();
                     die();
                 }
 
