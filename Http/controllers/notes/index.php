@@ -1,4 +1,6 @@
 <?php
-
 use \Http\controllers\notes\NotesController;
-(new NotesController)->index();
+use Core\App;
+
+$noteController = App::resolve(NotesController::class);
+$noteController->index();

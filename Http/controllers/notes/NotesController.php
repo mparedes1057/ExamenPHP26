@@ -9,11 +9,22 @@ class NotesController
 {
 
     private $currentUserId;
-    public static $instance = self::class;
+
+    /**
+     * @param $currentUserId
+     */
+    public function __construct()
+    {
+        $this->currentUserId = $_SESSION['user']['id'];
+    }
+
+    /**
+     * @param mixed $currentUserId
+     */
+
 
     public function create()
     {
-        dd($this->currentUserId);
         view("notes/create.view.php", [
             'heading' => 'Create Note',
             'errors' => []
@@ -59,12 +70,11 @@ class NotesController
 
     public function index()
     {
-        $this->currentUserId = $_SESSION['user']['id'];
-
         $db = App::resolve(Database::class);
         $notes = $db->query('select * from notes where user_id = :id', [
             'id' => $this->currentUserId
         ])->get();
+
 
         view("notes/index.view.php", [
             'heading' => 'My Notes',
@@ -104,8 +114,6 @@ class NotesController
                 'errors' => $errors
             ]);
         }
-
-        dd($this->currentUserId);
 
         $db->query('INSERT INTO notes(body, user_id) VALUES(:body, :user_id)', [
             'body' => $_POST['body'],

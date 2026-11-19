@@ -1,3 +1,6 @@
 <?php
 use \Http\controllers\notes\NotesController;
-(new NotesController)->destroy();
+use Core\App;
+
+$noteController = App::resolve(NotesController::class);
+$noteController->destroy();

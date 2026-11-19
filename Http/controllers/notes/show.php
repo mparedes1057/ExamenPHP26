@@ -1,3 +1,6 @@
 <?php
 use \Http\controllers\notes\NotesController;
-(new NotesController)->show();
+use Core\App;
+
+$noteController = App::resolve(NotesController::class);
+$noteController->show();

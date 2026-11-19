@@ -1,3 +1,6 @@
 <?php
 use \Http\controllers\notes\NotesController;
-(new NotesController)->update();
+use Core\App;
+
+$noteController = App::resolve(NotesController::class);
+$noteController->update();
