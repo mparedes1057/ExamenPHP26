@@ -6,7 +6,6 @@ use Inteficies\NotesDAO;
 
 class NotesController
 {
-
     private $currentUserId;
     private NotesDAO $notesDao;
 

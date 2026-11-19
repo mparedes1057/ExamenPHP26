@@ -5,6 +5,8 @@ namespace Core;
 use Core\Middleware\Authenticated;
 use Core\Middleware\Guest;
 use Core\Middleware\Middleware;
+use DAO\NotesDAOImpl;
+use Http\controllers\notes\NotesController;
 
 class Router
 {
@@ -59,6 +61,19 @@ class Router
         foreach ($this->routes as $route) {
             if ($route['uri'] === $uri && $route['method'] === strtoupper($method)) {
                 Middleware::resolve($route['middleware']);
+                $hp = ['index' => 'index()',
+                    'create' => 'create',
+                    'destroy' => 'destroy',
+                    'edit' => 'edit',
+                    'show' => 'show',
+                    'store' => 'store',
+                    'update' => 'update'];
+                if (array_key_exists($route['controller'], $hp)){
+                    $controller = App::resolve(NotesController::class);
+
+                    $controller->index();
+                    die();
+                }
 
                 return require base_path('Http/controllers/' . $route['controller']);
             }
