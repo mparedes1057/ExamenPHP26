@@ -2,6 +2,8 @@
 
 use Core\Session;
 use Core\ValidationException;
+use \Http\controllers\notes\NotesController;
+use Core\App;
 
 session_start();
 
@@ -18,6 +20,9 @@ spl_autoload_register(function ($class) {
 require base_path('bootstrap.php');
 
 $router = new \Core\Router();
+
+$noteController = App::resolve(NotesController::class);
+
 $routes = require base_path('routes.php');
 
 $uri = parse_url($_SERVER['REQUEST_URI'])['path'];

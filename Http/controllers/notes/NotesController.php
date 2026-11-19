@@ -1,21 +1,22 @@
 <?php
 
 namespace Http\controllers\notes;
-use Core\App;
-use Core\Database;
 use Core\Validator;
+use Inteficies\NotesDAO;
 
 class NotesController
 {
 
     private $currentUserId;
+    private NotesDAO $notesDao;
 
     /**
      * @param $currentUserId
      */
-    public function __construct()
+    public function __construct(NotesDAO $notesDAOImpl)
     {
         $this->currentUserId = $_SESSION['user']['id'];
+        $this->notesDao = $notesDAOImpl;
     }
 
     /**
@@ -33,18 +34,11 @@ class NotesController
 
     public function destroy()
     {
-
-        $db = App::resolve(Database::class);
-
-        $note = $db->query('select * from notes where id = :id', [
-            'id' => $_POST['id']
-        ])->findOrFail();
+        $note = $this->notesDao->getById($_POST['id']);
 
         authorize($note['user_id'] === $this->currentUserId);
 
-        $db->query('delete from notes where id = :id', [
-            'id' => $_POST['id']
-        ]);
+        $this->notesDao->delete($_POST['id']);
 
         header('location: /notes');
         exit();
@@ -53,11 +47,7 @@ class NotesController
 
     public function edit()
     {
-        $db = App::resolve(Database::class);
-
-        $note = $db->query('select * from notes where id = :id', [
-            'id' => $_GET['id']
-        ])->findOrFail();
+        $note = $this->notesDao->getById($_GET['id']);
 
         authorize($note['user_id'] === $this->currentUserId);
 
@@ -70,11 +60,7 @@ class NotesController
 
     public function index()
     {
-        $db = App::resolve(Database::class);
-        $notes = $db->query('select * from notes where user_id = :id', [
-            'id' => $this->currentUserId
-        ])->get();
-
+        $notes = $this->notesDao->getAllByUser($this->currentUserId);
 
         view("notes/index.view.php", [
             'heading' => 'My Notes',
@@ -84,11 +70,7 @@ class NotesController
 
     public function show()
     {
-        $db = App::resolve(Database::class);
-
-        $note = $db->query('select * from notes where id = :id', [
-            'id' => $_GET['id']
-        ])->findOrFail();
+        $note = $this->notesDao->getById($_GET['id']);
 
         authorize($note['user_id'] === $this->currentUserId);
 
@@ -101,7 +83,6 @@ class NotesController
 
     public function store()
     {
-        $db = App::resolve(Database::class);
         $errors = [];
 
         if (! Validator::string($_POST['body'], 1, 1000)) {
@@ -115,10 +96,7 @@ class NotesController
             ]);
         }
 
-        $db->query('INSERT INTO notes(body, user_id) VALUES(:body, :user_id)', [
-            'body' => $_POST['body'],
-            'user_id' => $this->currentUserId
-        ]);
+        $this->notesDao->create($this->currentUserId, $_POST['body']);
 
         header('location: /notes');
         die();
@@ -127,12 +105,8 @@ class NotesController
 
     public function update()
     {
-        $db = App::resolve(Database::class);
-
 // find the corresponding note
-        $note = $db->query('select * from notes where id = :id', [
-            'id' => $_POST['id']
-        ])->findOrFail();
+        $note = $this->notesDao->getById($_POST['id']);
 
 // authorize that the current user can edit the note
         authorize($note['user_id'] === $this->currentUserId);
@@ -153,10 +127,7 @@ class NotesController
             ]);
         }
 
-        $db->query('update notes set body = :body where id = :id', [
-            'id' => $_POST['id'],
-            'body' => $_POST['body']
-        ]);
+        $this->notesDao->update($_POST['id'], $_POST['body']);
 
 // redirect the user
         header('location: /notes');

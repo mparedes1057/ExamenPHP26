@@ -4,6 +4,7 @@ use Core\App;
 use Core\Container;
 use Core\Database;
 use \Http\controllers\notes\NotesController;
+use \DAO\NotesDAOImpl;
 
 $container = new Container();
 
@@ -14,8 +15,7 @@ $container->bind('Core\Database', function () {
 });
 
 $container->bind('Http\controllers\notes\NotesController', function () {
-
-    return new NotesController();
+    return new NotesController(new NotesDAOImpl());
 });
 
 App::setContainer($container);
