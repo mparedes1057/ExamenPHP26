@@ -1,4 +1,4 @@
 <?php
 
 use \Http\controllers\notes\NotesController;
-NotesController::index();
+(new NotesController)->index();

@@ -1,3 +1,3 @@
 <?php
 use \Http\controllers\notes\NotesController;
-NotesController::store();
+(new NotesController)->store();

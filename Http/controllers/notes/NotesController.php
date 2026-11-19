@@ -8,26 +8,28 @@ use Core\Validator;
 class NotesController
 {
 
-    public static function create()
+    private $currentUserId;
+    public static $instance = self::class;
+
+    public function create()
     {
+        dd($this->currentUserId);
         view("notes/create.view.php", [
             'heading' => 'Create Note',
             'errors' => []
         ]);
     }
 
-    public static function destroy()
+    public function destroy()
     {
 
         $db = App::resolve(Database::class);
-
-        $currentUserId = 1;
 
         $note = $db->query('select * from notes where id = :id', [
             'id' => $_POST['id']
         ])->findOrFail();
 
-        authorize($note['user_id'] === $currentUserId);
+        authorize($note['user_id'] === $this->currentUserId);
 
         $db->query('delete from notes where id = :id', [
             'id' => $_POST['id']
@@ -38,17 +40,15 @@ class NotesController
 
     }
 
-    public static function edit()
+    public function edit()
     {
         $db = App::resolve(Database::class);
-
-        $currentUserId = 1;
 
         $note = $db->query('select * from notes where id = :id', [
             'id' => $_GET['id']
         ])->findOrFail();
 
-        authorize($note['user_id'] === $currentUserId);
+        authorize($note['user_id'] === $this->currentUserId);
 
         view("notes/edit.view.php", [
             'heading' => 'Edit Note',
@@ -57,10 +57,14 @@ class NotesController
         ]);
     }
 
-    public static function index()
+    public function index()
     {
+        $this->currentUserId = $_SESSION['user']['id'];
+
         $db = App::resolve(Database::class);
-        $notes = $db->query('select * from notes where user_id = 1')->get();
+        $notes = $db->query('select * from notes where user_id = :id', [
+            'id' => $this->currentUserId
+        ])->get();
 
         view("notes/index.view.php", [
             'heading' => 'My Notes',
@@ -68,17 +72,15 @@ class NotesController
         ]);
     }
 
-    public static function show()
+    public function show()
     {
         $db = App::resolve(Database::class);
-
-        $currentUserId = 1;
 
         $note = $db->query('select * from notes where id = :id', [
             'id' => $_GET['id']
         ])->findOrFail();
 
-        authorize($note['user_id'] === $currentUserId);
+        authorize($note['user_id'] === $this->currentUserId);
 
         view("notes/show.view.php", [
             'heading' => 'Note',
@@ -87,7 +89,7 @@ class NotesController
 
     }
 
-    public static function store()
+    public function store()
     {
         $db = App::resolve(Database::class);
         $errors = [];
@@ -103,9 +105,11 @@ class NotesController
             ]);
         }
 
+        dd($this->currentUserId);
+
         $db->query('INSERT INTO notes(body, user_id) VALUES(:body, :user_id)', [
             'body' => $_POST['body'],
-            'user_id' => 1
+            'user_id' => $this->currentUserId
         ]);
 
         header('location: /notes');
@@ -113,11 +117,9 @@ class NotesController
 
     }
 
-    public static function update()
+    public function update()
     {
         $db = App::resolve(Database::class);
-
-        $currentUserId = 1;
 
 // find the corresponding note
         $note = $db->query('select * from notes where id = :id', [
@@ -125,12 +127,12 @@ class NotesController
         ])->findOrFail();
 
 // authorize that the current user can edit the note
-        authorize($note['user_id'] === $currentUserId);
+        authorize($note['user_id'] === $this->currentUserId);
 
 // validate the form
         $errors = [];
 
-        if (! Validator::string($_POST['body'], 1, 10)) {
+        if (! Validator::string($_POST['body'])) {
             $errors['body'] = 'A body of no more than 1,000 characters is required.';
         }
 

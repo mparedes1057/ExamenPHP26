@@ -1,3 +1,4 @@
 <?php
 use \Http\controllers\notes\NotesController;
-NotesController::create();
+dd(NotesController::$instance);
+NotesController::$instance->create();

@@ -1,3 +1,3 @@
 <?php
 use \Http\controllers\notes\NotesController;
-NotesController::update();
+(new NotesController)->update();
