@@ -4,7 +4,7 @@ $router->get('/', 'index.php');
 $router->get('/about', 'about.php');
 $router->get('/contact', 'contact.php');
 
-$router->get('/notes', 'notes/index.php')->only('auth');
+$router->get('/notes', )->only('auth');
 $router->get('/note', 'notes/show.php');
 $router->delete('/note', 'notes/destroy.php');
 

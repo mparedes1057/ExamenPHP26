@@ -7,13 +7,6 @@ use Inteficies\NotesDAO;
 
 class NotesController
 {
-    public static $noteRoutes = ['notes/index.php' => 'index',
-        'notes/show.php' => 'show',
-        'notes/destroy.php' => 'destroy',
-        'notes/edit.php' => 'edit',
-        'notes/create.php' => 'create',
-        'notes/store.php' => 'store',
-        'notes/update.php' => 'update'];
     private $currentUserId;
     private NotesDAO $notesDao;
 
@@ -22,7 +15,6 @@ class NotesController
      */
     public function __construct(NotesDAO $notesDAOImpl)
     {
-        $this->currentUserId = $_SESSION['user']['id'];
         $this->notesDao = $notesDAOImpl;
     }
 
