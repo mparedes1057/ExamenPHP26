@@ -4,7 +4,7 @@ use Core\App;
 use Core\Container;
 use Core\Database;
 use \Http\controllers\notes\NotesController;
-use \DAO\NotesDAOImpl;
+use \DAO\DAOFactory;
 
 $container = new Container();
 
@@ -15,7 +15,7 @@ $container->bind('Core\Database', function () {
 });
 
 $container->bind('Http\controllers\notes\NotesController', function () {
-    return new NotesController(new NotesDAOImpl());
+    return new NotesController(DAOFactory::createNotesDAO());
 });
-
+//132430Wm
 App::setContainer($container);
