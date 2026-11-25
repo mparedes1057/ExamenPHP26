@@ -15,6 +15,7 @@ class NotesController
      */
     public function __construct(NotesDAO $notesDAOImpl)
     {
+        $this->currentUserId = $_SESSION['user']['id'];
         $this->notesDao = $notesDAOImpl;
     }
 

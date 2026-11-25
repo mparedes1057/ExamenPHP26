@@ -62,14 +62,13 @@ class Router
             if ($route['uri'] === $uri && $route['method'] === strtoupper($method)) {
                 Middleware::resolve($route['middleware']);
 
-                /*
-                if (array_key_exists($route['controller'], NotesController::$noteRoutes)){
-                    $controller = App::resolve(NotesController::class);
-                    $funcio = NotesController::$noteRoutes[$route['controller']];
+                if (str_contains($route['controller'], "@")){
+                    $ruta = explode("@", $route['controller']);
+                    $controller = App::resolve($ruta[0]);
+                    $funcio = $ruta[1];
                     $controller->$funcio();
                     die();
                 }
-                */
 
                 return require base_path('Http/controllers/' . $route['controller']);
             }

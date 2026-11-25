@@ -4,15 +4,16 @@ $router->get('/', 'index.php');
 $router->get('/about', 'about.php');
 $router->get('/contact', 'contact.php');
 
-$router->get('/notes', )->only('auth');
-$router->get('/note', 'notes/show.php');
-$router->delete('/note', 'notes/destroy.php');
+$notesController = 'Http\controllers\notes\NotesController';
+$router->get('/notes', $notesController . '@index')->only('auth');
+$router->get('/note', $notesController . '@show');
+$router->delete('/note', $notesController . '@destroy');
 
-$router->get('/note/edit', 'notes/edit.php');
-$router->patch('/note', 'notes/update.php');
+$router->get('/note/edit', $notesController . '@edit');
+$router->patch('/note', $notesController . '@update');
 
-$router->get('/notes/create', 'notes/create.php');
-$router->post('/notes', 'notes/store.php');
+$router->get('/notes/create', $notesController . '@create');
+$router->post('/notes', $notesController . '@store');
 
 $router->get('/register', 'registration/create.php')->only('guest');
 $router->post('/register', 'registration/store.php')->only('guest');
