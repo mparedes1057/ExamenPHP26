@@ -12,7 +12,7 @@ $router->delete('/note', $notesController . '@destroy');
 $router->get('/note/edit', $notesController . '@edit');
 $router->patch('/note', $notesController . '@update');
 
-$router->get('/notes/create', $notesController . '@create');
+$router->get('/notes/create', $notesController . '@create')->only('auth');
 $router->post('/notes', $notesController . '@store');
 
 $router->get('/register', 'registration/create.php')->only('guest');

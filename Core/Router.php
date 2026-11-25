@@ -2,11 +2,7 @@
 
 namespace Core;
 
-use Core\Middleware\Authenticated;
-use Core\Middleware\Guest;
 use Core\Middleware\Middleware;
-use DAO\NotesDAOImpl;
-use Http\controllers\notes\NotesController;
 
 class Router
 {
